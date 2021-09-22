@@ -37,10 +37,10 @@ padding:0;
    border:none!important;
    }
 .active_tab{
-  background: #1d3ab0!important;
+  background: #1d3ab000!important;
   }
 .active_tab:hover{
- color:#fff!important;
+ color:rgb(37, 16, 3)!important;
   }
 /*********************header****************/
 .navbar-default {
@@ -54,7 +54,7 @@ padding:0;
    font-size:20px;
    }
 #header .tag_menu{
-   color:#fff;
+  color:#fff!important;
    padding-left:15px;
    padding-right:15px;
    font-size:14px;
@@ -63,14 +63,14 @@ padding:0;
    font-weight:bold;
    }
 #header .tag_menu:hover{
-   background:  #1d3ab0;
+  background:none;
   }
 .nav .open>a, .nav .open>a:hover, .nav .open>a:focus{
-background:#1d3ab0; 
+  background:none;
 color: #26a6b6!important;
   }
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus{
-  background:#1d3ab0; 
+  background:none;
   color:#fff!important;
   }
 .drop_1 {
@@ -97,10 +97,10 @@ color: #26a6b6!important;
 /*********************center****************/
 #center {
     background-image: url(../img/1.jpg);
-    padding-top: 250px;
+    padding-top: 180px;
     padding-bottom: 250px;
-	text-align:center;
-	background-attachment:fixed;
+	  text-align:center;
+	  background-attachment:fixed;  
 }
 .center h1{
   color:#000;
