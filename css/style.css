@@ -1,0 +1,53 @@
+
+/*********************header****************/
+.navbar-default {
+  background:none;
+  border:none;
+  padding-top:30px;
+}
+.navbar-brand{
+   color:#fff!important;
+   font-weight:bold;
+   font-size:20px;
+   }
+#header .tag_menu{
+  color:rgb(43, 4, 4)!important;
+   padding-left:15px;
+   padding-right:15px;
+   font-weight:bold;
+   font-size:30px;
+   margin-left:5px;
+   margin-right:5px;
+   font-weight:bold;
+   }
+#header .tag_menu:hover{
+  background:none;
+  }
+.nav .open>a, .nav .open>a:hover, .nav .open>a:focus{
+  background:none;
+color: #26a6b6!important;
+  }
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus{
+  background:none;
+  color:#fff!important;
+  }
+.drop_1 {
+  min-width:200px;
+  padding-top:15px;
+  padding-bottom:15px; 
+   }
+.drop_1 a{
+	  padding-top:5px!important;
+	  padding-bottom:5px!important;
+	  font-weight:bold!important;
+	   }
+.drop_1 a:hover{
+      background:#1d3ab0!important;
+	  color:#fff!important; 
+	   }
+.about_header .navbar-default{
+    background:#13225d00;
+	padding-top:20px;
+	padding-bottom:20px; 
+	 }
+/*********************header_end****************/ 
