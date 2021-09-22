@@ -9,13 +9,8 @@
         <link rel="stylesheet" href="css/skel-noscript.css" />
         <link rel="stylesheet" href="css/style.css" />
         <link rel="stylesheet" href="css/style-desktop.css" />
-      </noscript>
-
+    </noscript>
 <script>
-
-
-
-
     var inboundChar;
     var outboundChar;
     var device;
@@ -57,7 +52,7 @@
     function log(text)
     {
       var textarea = document.getElementById('log');
-      textarea.value += "\n" + text;
+      textarea.value += "\n" + text;	  
       textarea.scrollTop = textarea.scrollHeight;
     }
   
@@ -155,9 +150,6 @@
     }
   </script>
 
-
-
-
   <style>
     table, td, div, h1, p {
       font-family: Arial, sans-serif;
@@ -198,15 +190,25 @@
 	  margin: 4px 2px;
 	  cursor: pointer;
 	}
-	</style>
+	.textarea {
+	  background-color: #4CAF50;
+	  border: none;
+	  color: white;
+	  padding: 15px 32px;
+	  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  font-size: 16px;
+	  margin: 4px 2px;
+	  cursor: pointer;
+	}
 
+	</style>
     <noscript>
         <link rel="stylesheet" href="css/skel-noscript.css" />
         <link rel="stylesheet" href="css/style.css" />
         <link rel="stylesheet" href="css/style-desktop.css" />
-      </noscript>
-
-
+    </noscript>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/style.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
@@ -231,7 +233,7 @@
                 </button>
 				<div class="logo">
 					<a href="http://www.pulsarmeasurement.com" style="text-decoration:none;">
-						<img src="./img/pulsarlogo-old.svg"  alt="Logo" style="width:168px;height:128px;border:none;text-decoration:none;color:#eeeeee00;">
+						<img src="./img/pulsarlogo-old.svg"  alt="Logo" style="width:226px;height:128px;border:none;text-decoration:none;color:#eeeeee00;">
 					</a>								
 				</div>			
             </div>		
@@ -308,7 +310,7 @@
 					  </table>
 					  <table>                    
 						<tr>
-								<textarea id="log" rows="20" cols="60" ></textarea>
+								<textarea id="log" rows="20" cols="60"></textarea>
 						</tr>
 						<tr>
 							<td>
