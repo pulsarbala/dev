@@ -54,7 +54,7 @@ padding:0;
    font-size:20px;
    }
 #header .tag_menu{
-  color:#fff!important;
+  color:rgb(43, 4, 4)!important;
    padding-left:15px;
    padding-right:15px;
    font-size:14px;
@@ -99,6 +99,7 @@ color: #26a6b6!important;
     background-image: url(../img/1.jpg);
     padding-top: 180px;
     padding-bottom: 250px;
+    min-width:1920px;
 	  text-align:center;
 	  background-attachment:fixed;  
 }
@@ -132,7 +133,7 @@ color: #26a6b6!important;
 
 /*********************middle****************/
 .middle_page{
-   background:#f7f7f7;
+   background:#f7f7f700;
    }
 #middle{
        padding-top:100px;
