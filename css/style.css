@@ -1,3 +1,42 @@
+ 
+body{
+  font-family: 'Jura', sans-serif;
+     }
+  h1,h2,h3,h4,h5,h6{
+  padding:0;
+  margin:0;
+  }
+  a:hover{
+  text-decoration:none;
+  }
+  ul{
+  padding:0;
+  margin:0;
+  list-style:none;
+  }
+  p{
+  padding:0;
+  margin:0;
+  }
+  
+.space_left{
+  padding-left:0; 
+  } 
+  .space_right{
+  padding-right:0; 
+  } 
+  .space_all{
+  padding:0; 
+  } 
+  .border_none_1{
+     border:none!important;
+     }
+  .active_tab{
+    background: #1d3ab000!important;
+    }
+  .active_tab:hover{
+   color:rgb(37, 16, 3)!important;
+    }
 
 /*********************header****************/
 .navbar-default {
@@ -53,8 +92,13 @@ color: #26a6b6!important;
 /*********************header_end****************/ 
 /*********************center****************/
 #center {  
-
- 
+  background-image:url("../img/1.jpg");
+  padding-top: 180px;
+  padding-bottom: 250px;
+  min-width:1920px;
+  min-height:1080px;
+  text-align:center;
+  background-attachment:fixed;  
 }
 .center h1{
 color:#000;
@@ -82,4 +126,127 @@ color:#fff;
 .center h5 a:hover{
  background:#13225d;
  }
-/*********************center_end****************/  
+/*********************center_end****************/   
+
+/*********************middle****************/
+.middle_page{
+  background:#f7f7f700;
+  }
+#middle{
+      padding-top:100px;
+    padding-bottom:100px;
+    }
+.middle h2{
+   font-weight:bold;
+ font-size:35px; 
+ color:#000;
+  }
+/* Common style */
+.grid figure {
+ position: relative;
+ float: left;
+ overflow: hidden;
+ min-width:100%;
+ max-width: 480px;
+ background: #3085a3;
+ text-align: center;
+ cursor: pointer;
+}
+
+.grid figure img {
+ position: relative;
+ display: block;
+ min-height:400px;
+ max-width: 100%;
+ min-width:100%;
+ opacity: 0.8;
+}
+
+
+/*---------------*/
+/***** Lexi *****/
+/*---------------*/
+
+figure.effect-lexi {
+	background: -webkit-linear-gradient(-45deg, #000 0%,#fff 100%);
+	background: linear-gradient(-45deg, #000 0%,#fff 100%);
+}
+
+figure.effect-lexi img {
+	margin: -10px 0 0 -10px;
+	max-width: none;
+	width: -webkit-calc(100% + 10px);
+	width: calc(100% + 10px);
+	opacity: 0.9;
+	-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	transition: opacity 0.35s, transform 0.35s;
+	-webkit-transform: translate3d(10px,10px,0);
+	transform: translate3d(10px,10px,0);
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
+figure.effect-lexi figcaption::before,
+figure.effect-lexi p {
+	-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	transition: opacity 0.35s, transform 0.35s;
+}
+
+figure.effect-lexi figcaption::before {
+	position: absolute;
+	right: -100px;
+	bottom: -100px;
+	width: 300px;
+	height: 300px;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	box-shadow: 0 0 0 900px rgba(255,255,255,0.2);
+	content: '';
+	opacity: 0;
+	-webkit-transform: scale3d(0.5,0.5,1);
+	transform: scale3d(0.5,0.5,1);
+	-webkit-transform-origin: 50% 50%;
+	transform-origin: 50% 50%;
+}
+
+figure.effect-lexi:hover img {
+	opacity: 0.6;
+	-webkit-transform: translate3d(0,0,0);
+	transform: translate3d(0,0,0);
+}
+
+figure.effect-lexi h2 {
+	text-align: left;
+	-webkit-transition: -webkit-transform 0.35s;
+	transition: transform 0.35s;
+	-webkit-transform: translate3d(5px,5px,0);
+	transform: translate3d(5px,5px,0);
+}
+
+figure.effect-lexi p {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	padding: 0 1.5em 1.5em 0;
+	width: 140px;
+	text-align: right;
+	opacity: 0;
+	-webkit-transform: translate3d(20px,20px,0);
+	transform: translate3d(20px,20px,0);
+}
+
+figure.effect-lexi:hover figcaption::before {
+	opacity: 1;
+	-webkit-transform: scale3d(1,1,1);
+	transform: scale3d(1,1,1);
+}
+
+figure.effect-lexi:hover h2,
+figure.effect-lexi:hover p {
+	opacity: 1;
+	-webkit-transform: translate3d(0,0,0);
+	transform: translate3d(0,0,0);
+}
+
+
+
