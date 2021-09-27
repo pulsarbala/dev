@@ -96,7 +96,7 @@ color: #26a6b6!important;
   padding-top: 180px;
   padding-bottom: 250px;
   min-width:100%;
-  min-height:520px;
+  min-height:100%;
   text-align:center;
   background-attachment:fixed;  
 }
