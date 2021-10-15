@@ -57,27 +57,16 @@
     }
   
     const utf8encoder = new TextEncoder();
-    const windows1251 = new TextEncoder();
 
     function utf8ToHex(s)
     {
       const rb = utf8encoder.encode(s);
-      //const rb = windows1251.encode(s);
       let r = '';
       for (const b of rb) {
         r += ('0' + b.toString(16)).slice(-2);
         r += ' ';
       }
       return r;
-    } 
-
-    function Uint8tohex(s)
-    {
-      let a = [];
-      for (let i = 0; i < s.byteLength; i++) {
-        a.push('0x' + ('00' + s.getUint8(i).toString(16)).slice(-2));
-      }
-      return a;
     } 
 
     // Incoming GATT notification was received
@@ -88,12 +77,8 @@
       var checkBox = document.getElementById("myCheck");
       if (checkBox.checked == true)
       {
-        //let decoder2 = new TextDecoder('windows-1251');
-        //var hex = decoder2.decode(readInValue);
-        var hex = Uint8tohex(readInValue);
-        //var hex = utf8ToHex(decoder.decode(readInValue));
-        //log(" <- " + hex.replace('0d ','\r <-').replace('0a ','').replace('00 ',''));        
-        log(" <- " + hex + "\r <- ");
+        var hex = utf8ToHex(decoder.decode(readInValue));
+        log(" <- " + hex.replace('0d ','\r <-').replace('0a ','').replace('00 ',''));
       }
       else
       {
@@ -362,104 +347,45 @@
               <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
               <script>
               
-              // X points/labels
               var xdata = [];
-              //xdata[0] = 0.00;
-              var pts = 0.50;//0.036;//7.2/200;
-              xdata[0] = 0.00;
-              for (let i = 1; i <= 200; i++)
-              {
-                // if(i%14 == 0)
-                // {
-                //   xdata[i] = pts;
-                //   pts += 0.5;
-                // }
-                //xdata[i] = i*(7.2/199);
-                //xdata[i] = Math.round(i*(7.2/199)*1000)/1000;
-                xdata[i] = Math.round((xdata[i - 1] + 0.036)*1000)/1000;
-                // if(xdata[i] >= pts)
-                // {
-                //   xdata[i] = pts;
-                //   pts += 0.50;
-                // }
-                // else
-                // {
-                //   xdata[i] = "";
-                // }
-              }
-
-              // Echo variables
-              var echo = [];
-              for (let i = 0; i < 200; i++)
-              {
-                if(i <= 7)
-                {
-                  echo[i] = 1000 - (140*i);
-                }
-                else
-                  echo[i] = 20;
-              }
-              echo[Math.round(1.654*200/7.2)] = 560;
-              echo[Math.round(1.75*200/7.2)] = 400;
-              echo[Math.round(2.1*200/7.2)] = 540;
-              echo[Math.round(2.55*200/7.2)] = 290;
-              echo[Math.round(3.4*200/7.2)] = 340;
-              echo[Math.round(3.55*200/7.2)] = 195;
-              echo[Math.round(3.77*200/7.2)] = 250;
-              echo[Math.round(4.28*200/7.2)] = 160;
-
-              // Datem variables
-              var datem = [];
-              for (let i = 0; i < 200; i++)
-              {
-                if (i <= 4)
-                  datem[i] = 1000;
-                else if (i <= 7)
-                {
-                  datem[i] = 1000 - (48.57*i);
-                }
-                else  // Creating a hyperbola
-                {
-                  datem[i] = (4200/i) + 60;
-                }
-              }
+              for (let i = 0; i < 203; i++)
+                 xdata[i] = i*(7.2/203);
               
               // setup block
               var data = {
-                //labels: ['0.00', '0.50', '1.00', '1.50', '2.00', '2.50', '3.00', '3.50', '4.00', '4.50', '5.00', '5.50', '6.00', '6.50', '7.00'],
-                labels: xdata,
-                // xAxes: [{
-                //   type: 'time',
-                //   ticks: {
-                //     minRotation: 90,
-                //     autoSkip: false,
-                //     maxTicksLimit: 20,
-                //   }
-                // }],              
+                labels: ['0.00', '0.50', '1.00', '1.50', '2.00', '2.50', '3.00', '3.50', '4.00', '4.50', '5.00', '5.50', '6.00', '6.50', '7.00'],
+                xAxes: [{
+                  type: 'time',
+                  ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20
+                  }
+                }],
                 datasets: [{
                   type: 'line',
                   label: 'Datem',
-                  //data: [1000, 30, 700, 350, 30, 30, 400, 250, 30, 30, 100, 30, 30, 30, 30],
-                  data: datem,
-                  radius: 1,
-                  pointRadius: 1,
-                  borderWidth: 2,
-                  backgroundColor: 'rgba(75, 119, 190, 1)',
-                  borderColor:     'rgba(75, 119, 190, 1)',
+                  data: [1000, 30, 700, 350, 30, 30, 400, 250, 30, 30, 100, 30, 30, 30, 30],
+                  backgroundColor: 'rgba(153, 102, 255, 1)',
+                  borderColor:     'rgba(153, 102, 255, 1)',
                   //tension: 0.4
                 },
                 {
                   type: 'line',
                   label: 'Echo',
-                  //data: [1000, 500, 350, 250, 180, 120, 100, 95, 90, 90, 88, 85, 85, 85, 85],
-                  data: echo,
-                  radius: 1,
-                  pointRadius: 1,
-                  borderWidth: 2,
+                  data: [1000, 500, 350, 250, 180, 120, 100, 95, 90, 90, 88, 85, 85, 85, 85],
                   backgroundColor: 'rgba(255, 0, 0, 1)',
                   borderColor:     'rgba(255, 0, 0, 1)',
                   //tension: 0.4
                 },
+                // {
+                //   //type: 'linear',
+                //   label: 'Distance',
+                //   backgroundColor: 'rgba(0, 0, 255, 1)',
+                //   borderColor:     'rgba(0, 0, 255, 1)',
+                //   borderWidth: 2,
+                //   fill: false,
+                //   data: [{x:200, y:500}]
+                // }
                 ]
               };
               
@@ -468,40 +394,29 @@
                 id: 'arbitraryLine',
                 beforeDraw(chart, args, options){
                   const ctx = chart.canvas.getContext('2d');
-                  var { ctr, chartArea: {top, right, bottom, left, width, height}, scales:
+                  var { ctr, chartArea: {top, right, bottom, left, width, height }, scales:
                     {x, y} } = chart;
                   ctx.save();
               
                   // 1 How to draw a line?
-                  // ctx.fillStyle = 'yellow';
-                  // ctx.fillRect(x.getPixelForValue(0), top, x.getPixelForValue(-1), height); // Near blanking area
-                  // ctx.fillStyle = 'yellow';
-                  // ctx.fillRect(x.getPixelForValue(12), top, x.getPixelForValue(0), height); // Far blanking area
-                  // ctx.strokeStyle = 'red';
-                  // ctx.strokeRect(x.getPixelForValue(2), top, 0, height);  // Distance//(x0, y0, x1, y1);
-                  // ctx.strokeStyle = 'black';
-                  // ctx.strokeRect(x.getPixelForValue(1), top, 0, height);  // Gate start
-                  // ctx.strokeStyle = 'black';
-                  // ctx.strokeRect(x.getPixelForValue(3), top, 0, height);  // Gate stop
-                  // ctx.fillStyle = 'black';
                   ctx.fillStyle = 'yellow';
-                  ctx.fillRect(x.getPixelForValue(0), top, 0.3*width/7.2, height); // Near blanking area
+                  ctx.fillRect(x.getPixelForValue(0), top, x.getPixelForValue(-1), height); // Near blanking area
                   ctx.fillStyle = 'yellow';
-                  ctx.fillRect(x.getPixelForValue(6*200/7.2), top, left+10, height); // Far blanking area
+                  ctx.fillRect(x.getPixelForValue(12), top, x.getPixelForValue(0), height); // Far blanking area
                   ctx.strokeStyle = 'red';
-                  ctx.strokeRect(x.getPixelForValue(1.654*200/7.2), top, 0, height);  // Distance//(x0, y0, x1, y1);
+                  ctx.strokeRect(x.getPixelForValue(2), top, 0, height);  // Distance//(x0, y0, x1, y1);
                   ctx.strokeStyle = 'black';
-                  ctx.strokeRect(x.getPixelForValue(1.654*200/7.2) - 20, top, 0, height);  // Gate start
+                  ctx.strokeRect(x.getPixelForValue(1), top, 0, height);  // Gate start
                   ctx.strokeStyle = 'black';
-                  ctx.strokeRect(x.getPixelForValue(1.654*200/7.2) + 20, top, 0, height);  // Gate stop
-                  ctx.fillStyle = 'black';                  
-                  ctx.fillText("Length          = 4.346 m", x.getPixelForValue(140), top+10);
-                  ctx.fillText("Distance       = 1.654 m", x.getPixelForValue(140), top+20);
-                  ctx.fillText("Volume         = 2.37 m³", x.getPixelForValue(140), top+30);
-                  ctx.fillText("Temperature = 20.00 °C", x.getPixelForValue(140), top+40);
-                  ctx.fillText("Noise            = 30 mV", x.getPixelForValue(140), top+50);
-                  ctx.fillText("Output          = 20.00 mA", x.getPixelForValue(140), top+60);
-                  ctx.fillText("Status           = OK", x.getPixelForValue(140), top+80);
+                  ctx.strokeRect(x.getPixelForValue(3), top, 0, height);  // Gate stop
+                  ctx.fillStyle = 'black';
+                  ctx.fillText("Length          = 4.263 m", x.getPixelForValue(10), top+10);
+                  ctx.fillText("Distance       = 1.737 m", x.getPixelForValue(10), top+20);
+                  ctx.fillText("Volume         = 0.00 m³", x.getPixelForValue(10), top+30);
+                  ctx.fillText("Temperature = 20.00 °C", x.getPixelForValue(10), top+40);
+                  ctx.fillText("Noise            = 30 mV", x.getPixelForValue(10), top+50);
+                  ctx.fillText("Output          = 4.00 mA", x.getPixelForValue(10), top+60);
+                  ctx.fillText("Status           = OK", x.getPixelForValue(10), top+80);
 
                   // x0 = starting point on the horizontal line, left to right
                   // y0 = starting point on the vertical line, top to bottom
@@ -525,52 +440,30 @@
                 }
               };
               
-              var valtest = Math.round(0.5*200/7.2);
-              var rounding;
-
               // config block
               var config = {
                 type: 'line',
                 data: data,
                 plugins: [plugin, arbitraryLine],
-                options: {                  
+                options: {
                   // plugins: {
                   //   title: {
                   //     display: true,
                   //     text: 'Trace Data',
                   //   },          
                   // },                                
-                  scales: {                                 
+                  scales: {
                     x: {
                       //type: 'linear',
                       title: {
                         display: true,
-                        text: 'mtrs',
-                      },
-                      grid: {
-                        display: false,
-                        //drawTicks: true,
-                        //drawOnChartArea: true                     
-                      },
-                      ticks: {
-                        maxTicksLimit: xdata.length,
-                        // For a category axis, the val is the index so the lookup via getLabelForValue is needed
-                        callback: function(val, index) 
-                        {
-                          // Hide the label of every 14th dataset
-                          rounding = Math.round(this.getLabelForValue(val)*2)/2;                          
-                          return index % valtest === 0 ? rounding.toFixed(2) : '';
-                        },
-                        // callback: function(tick, index, ticksArray) {
-                        //   // return the string representation of the tick value. Return undefined to hide the grid line
-                        // },
-                        maxRotation: 0,                     
-                      }                     
+                        text: 'mtrs'
+                      }
                     },                                       
                     y: {
                       title: {
                         display: true,
-                        text: 'mV',
+                        text: 'mV'
                       },                        
                       max: 1000,
                       min:0,
@@ -578,12 +471,12 @@
                         stepSize: 100
                       },
                       beginAtZero: true
-                    },               
+                    }
                   },
-                  // tooltips: {
-                  //   mode: 'index',
-                  //   intersect: true
-                  // },                  
+                  tooltips: {
+                    mode: 'index',
+                    intersect: true
+                  },                  
                   // annotation: {
                   //   annotations: [{
                   //   type: 'line',
