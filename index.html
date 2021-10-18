@@ -399,7 +399,7 @@
                 else
                   echo[i] = 20;
               }
-              echo[Math.round(1.654*200/7.2)] = 560;
+              echo[Math.round(1.654*200/7.2)] = 560;  // Adding peaks
               echo[Math.round(1.75*200/7.2)] = 400;
               echo[Math.round(2.1*200/7.2)] = 540;
               echo[Math.round(2.55*200/7.2)] = 290;
@@ -438,7 +438,7 @@
                 // }],              
                 datasets: [{
                   type: 'line',
-                  label: 'Datem',
+                  label: 'Datem',   // Datem array
                   //data: [1000, 30, 700, 350, 30, 30, 400, 250, 30, 30, 100, 30, 30, 30, 30],
                   data: datem,
                   radius: 1,
@@ -446,11 +446,11 @@
                   borderWidth: 2,
                   backgroundColor: 'rgba(75, 119, 190, 1)',
                   borderColor:     'rgba(75, 119, 190, 1)',
-                  //tension: 0.4
+                  //tension: 0.4    // Line tension (to make it more smoother)
                 },
                 {
                   type: 'line',
-                  label: 'Echo',
+                  label: 'Echo',    // Echo array
                   //data: [1000, 500, 350, 250, 180, 120, 100, 95, 90, 90, 88, 85, 85, 85, 85],
                   data: echo,
                   radius: 1,
@@ -464,7 +464,7 @@
               };
               
               // arbitraryLine Plugin
-              var arbitraryLine = {
+              var arbitraryLine = {       // Fills near & far blanking areas, Plots Distance, gate start and stop. Shows dynamic variables
                 id: 'arbitraryLine',
                 beforeDraw(chart, args, options){
                   const ctx = chart.canvas.getContext('2d');
@@ -488,6 +488,7 @@
                   ctx.fillRect(x.getPixelForValue(0), top, 0.3*width/7.2, height); // Near blanking area
                   ctx.fillStyle = 'yellow';
                   ctx.fillRect(x.getPixelForValue(6*200/7.2), top, left+10, height); // Far blanking area
+                  //ctx.fillRect(x.getPixelForValue(Math.round(this.getLabelForValue(6*200/7.2)*2)/2), top, left+10, height); // Far blanking area
                   ctx.strokeStyle = 'red';
                   ctx.strokeRect(x.getPixelForValue(1.654*200/7.2), top, 0, height);  // Distance//(x0, y0, x1, y1);
                   ctx.strokeStyle = 'black';
@@ -495,13 +496,13 @@
                   ctx.strokeStyle = 'black';
                   ctx.strokeRect(x.getPixelForValue(1.654*200/7.2) + 20, top, 0, height);  // Gate stop
                   ctx.fillStyle = 'black';                  
-                  ctx.fillText("Length          = 4.346 m", x.getPixelForValue(140), top+10);
-                  ctx.fillText("Distance       = 1.654 m", x.getPixelForValue(140), top+20);
-                  ctx.fillText("Volume         = 2.37 m³", x.getPixelForValue(140), top+30);
-                  ctx.fillText("Temperature = 20.00 °C", x.getPixelForValue(140), top+40);
-                  ctx.fillText("Noise            = 30 mV", x.getPixelForValue(140), top+50);
-                  ctx.fillText("Output          = 20.00 mA", x.getPixelForValue(140), top+60);
-                  ctx.fillText("Status           = OK", x.getPixelForValue(140), top+80);
+                  ctx.fillText("Length          = 4.346 m", x.getPixelForValue(135), top+10); // Dynamic variables
+                  ctx.fillText("Distance       = 1.654 m", x.getPixelForValue(135), top+20);
+                  ctx.fillText("Volume         = 2.37 m³", x.getPixelForValue(135), top+30);
+                  ctx.fillText("Temperature = 20.00 °C", x.getPixelForValue(135), top+40);
+                  ctx.fillText("Noise            = 30 mV", x.getPixelForValue(135), top+50);
+                  ctx.fillText("Output          = 20.00 mA", x.getPixelForValue(135), top+60);
+                  ctx.fillText("Status           = OK", x.getPixelForValue(135), top+80);
 
                   // x0 = starting point on the horizontal line, left to right
                   // y0 = starting point on the vertical line, top to bottom
@@ -513,7 +514,7 @@
                 }
               }
 
-              const plugin = {
+              const plugin = {          // For white background plot
                 id: 'custom_canvas_background_color',
                 beforeDraw: (chart) => {
                   const ctx = chart.canvas.getContext('2d');
@@ -532,7 +533,7 @@
               var config = {
                 type: 'line',
                 data: data,
-                plugins: [plugin, arbitraryLine],
+                plugins: [plugin, arbitraryLine], // Uses both plugins
                 options: {                  
                   // plugins: {
                   //   title: {
@@ -548,7 +549,7 @@
                         text: 'mtrs',
                       },
                       grid: {
-                        display: false,
+                        //display: false,
                         //drawTicks: true,
                         //drawOnChartArea: true                     
                       },
@@ -558,13 +559,13 @@
                         callback: function(val, index) 
                         {
                           // Hide the label of every 14th dataset
-                          rounding = Math.round(this.getLabelForValue(val)*2)/2;                          
-                          return index % valtest === 0 ? rounding.toFixed(2) : '';
-                        },
-                        // callback: function(tick, index, ticksArray) {
-                        //   // return the string representation of the tick value. Return undefined to hide the grid line
-                        // },
-                        maxRotation: 0,                     
+                          rounding = Math.round(this.getLabelForValue(val)*2)/2;                // Rounded precision
+                          if(index == 0)
+                            return (index) % valtest === 0 ? rounding.toFixed(2) : undefined;
+                          else          
+                            return (index + 1) % valtest === 0 ? rounding.toFixed(2) : undefined; // Shows rounded value in Xaxis aling with gridline,
+                        },                                                                      // undefined don't shows gridlines
+                        maxRotation: 0,   // Rotate the tick labels to show horizontally                     
                       }                     
                     },                                       
                     y: {
