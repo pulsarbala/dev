@@ -76,7 +76,7 @@
       let a = [];
       for (let i = 0; i < s.byteLength; i++) {
         a.push('0x' + ('00' + s.getUint8(i).toString(16)).slice(-2));
-      }
+      }      
       return a;
     } 
 
@@ -88,12 +88,8 @@
       var checkBox = document.getElementById("myCheck");
       if (checkBox.checked == true)
       {
-        //let decoder2 = new TextDecoder('windows-1251');
-        //var hex = decoder2.decode(readInValue);
         var hex = Uint8tohex(readInValue);
-        //var hex = utf8ToHex(decoder.decode(readInValue));
-        //log(" <- " + hex.replace('0d ','\r <-').replace('0a ','').replace('00 ',''));        
-        log(" <- " + hex + "\r <- ");
+        log(" <- " + hex + "\r <- ");        
       }
       else
       {
