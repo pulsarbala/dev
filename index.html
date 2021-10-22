@@ -69,17 +69,67 @@
         r += ' ';
       }
       return r;
-    } 
+    }
 
     function Uint8tohex(s)
     {
       let a = [];
+      var skip = 0;
+      var check;
+      const doc_value = document.getElementById('cmd').value;
       for (let i = 0; i < s.byteLength; i++) {
-        a.push('0x' + ('00' + s.getUint8(i).toString(16)).slice(-2));
-      }      
+        check = s.getUint8(i);
+        if((i == 0) && (check == 10))
+          skip = 1;
+        else if ((i == (s.byteLength-1)) && (check == 0))
+          skip = 1;
+        else
+        {
+          if(skip == 1)
+          {
+            if(doc_value == "GET ECHO1")
+              echo[i-1] = check*1000/255;
+            else if(doc_value == "GET ECHO2")
+              echo[99 + (i-1)] = check*1000/255;
+            else if(doc_value == "GET DATEM1")
+              datem[i-1] = check*1000/255;
+            else if(doc_value == "GET DATEM2")
+              datem[99 + (i-1)] = check*1000/255;
+            a.push(check);
+          }
+          else
+          {
+            if(doc_value == "GET ECHO1")
+              echo[i] = check*1000/255;
+            else if(doc_value == "GET ECHO2")
+              echo[99 + (i)] = check*1000/255;
+            else if(doc_value == "GET DATEM1")
+              datem[i] = check*1000/255;
+            else if(doc_value == "GET DATEM2")
+              datem[99 + (i)] = check*1000/255;
+            a.push(check);
+          }
+        }
+        // a.push(s.getUint8(i));
+        // a.push('0x' + ('00' + s.getUint8(i).toString(16)).slice(-2));
+      }
+      // console.log(a);
+      // console.log(echo);
+      // console.log(datem);
+      if((doc_value == "GET ECHO1") || (doc_value == "GET ECHO2") || (doc_value == "GET DATEM1") || (doc_value == "GET DATEM2"))
+        myChart.update();
       return a;
     } 
-    
+
+    // function Uint8tohex2(s)
+    // {
+    //   var val = s;
+    //   alert(s);
+    //   var newVal = val.replace(/\\x([0-9A-F]{2})/ig, function() {
+    //     return String.fromCharCode(parseInt(arguments[1], 16));
+    //   });
+    //   alert(newVal);
+    // } 
 
     // Incoming GATT notification was received
     async function incomingData(event){
@@ -87,10 +137,12 @@
       let readInValue = await outboundChar.readValue();
       let decoder = new TextDecoder('utf-8');
       var checkBox = document.getElementById("myCheck");
-      if (checkBox.checked == true)
+      const doc_value = document.getElementById('cmd').value;
+      if((doc_value == "GET ECHO1") || (doc_value == "GET ECHO2") || (doc_value == "GET DATEM1") || (doc_value == "GET DATEM2") || (checkBox.checked == true))
+      // if (checkBox.checked == true)
       {
         var hex = Uint8tohex(readInValue);
-        log(" <- " + hex + "\r <- ");        
+        log(" <- " + hex);
       }
       else
       {
@@ -342,7 +394,7 @@
 						  <td><button type="button" class="button button-style1" onclick="ble_connect()">Device Scan</button></td>
 						  <td><button type="button" class="button button-style1" onclick="bleDisconnect()">End Session</button></td>                      
 						  <td><button type="button" class="button button-style1" onclick="sendATL('AT+AUTH=123321')">Test-Login</button></td> 
-              <td>Hex: <input type="checkbox" id="myCheck" onclick="myFunction()">
+              <td>Hex: <input type="checkbox" id="myCheck">
               <p id="text" style="display:none">Checkbox is CHECKED!</p></td>                     
 						</tr>                    
 					  </table>
@@ -352,7 +404,7 @@
 						</tr>
 						<tr>
 
-              <div class="chartBox">
+              <div class="chartBox" style="position: relative; margin: auto; height:300px; width:550px">
                 <canvas id="myChart"></canvas>
               </div>   
 
@@ -484,22 +536,22 @@
                   ctx.fillStyle = 'yellow';
                   ctx.fillRect(x.getPixelForValue(0), top, 0.3*width/7.2, height); // Near blanking area
                   ctx.fillStyle = 'yellow';
-                  ctx.fillRect(x.getPixelForValue(6*200/7.2), top, left+10, height); // Far blanking area
+                  ctx.fillRect(x.getPixelForValue(6*200/7.2), top, (7.2 - 6.0)*width/7.2, height); // Far blanking area
                   //ctx.fillRect(x.getPixelForValue(Math.round(this.getLabelForValue(6*200/7.2)*2)/2), top, left+10, height); // Far blanking area
                   ctx.strokeStyle = 'red';
                   ctx.strokeRect(x.getPixelForValue(1.654*200/7.2), top, 0, height);  // Distance//(x0, y0, x1, y1);
                   ctx.strokeStyle = 'black';
-                  ctx.strokeRect(x.getPixelForValue(1.654*200/7.2) - 20, top, 0, height);  // Gate start
+                  ctx.strokeRect(x.getPixelForValue((1.654 - 0.20)*200/7.2), top, 0, height);  // Gate start
                   ctx.strokeStyle = 'black';
-                  ctx.strokeRect(x.getPixelForValue(1.654*200/7.2) + 20, top, 0, height);  // Gate stop
+                  ctx.strokeRect(x.getPixelForValue((1.654 + 0.20)*200/7.2), top, 0, height);  // Gate stop
                   ctx.fillStyle = 'black';                  
-                  ctx.fillText("Length          = 4.346 m", x.getPixelForValue(135), top+10); // Dynamic variables
-                  ctx.fillText("Distance       = 1.654 m", x.getPixelForValue(135), top+20);
-                  ctx.fillText("Volume         = 2.37 m³", x.getPixelForValue(135), top+30);
-                  ctx.fillText("Temperature = 20.00 °C", x.getPixelForValue(135), top+40);
-                  ctx.fillText("Noise            = 30 mV", x.getPixelForValue(135), top+50);
-                  ctx.fillText("Output          = 20.00 mA", x.getPixelForValue(135), top+60);
-                  ctx.fillText("Status           = OK", x.getPixelForValue(135), top+80);
+                  ctx.fillText("Length          = 4.346 m", x.getPixelForValue(140), top+10); // Dynamic variables
+                  ctx.fillText("Distance       = 1.654 m", x.getPixelForValue(140), top+20);
+                  ctx.fillText("Volume         = 2.37 m³", x.getPixelForValue(140), top+30);
+                  ctx.fillText("Temperature = 20.00 °C", x.getPixelForValue(140), top+40);
+                  ctx.fillText("Noise            = 30 mV", x.getPixelForValue(140), top+50);
+                  ctx.fillText("Output          = 20.00 mA", x.getPixelForValue(140), top+60);
+                  ctx.fillText("Status           = OK", x.getPixelForValue(140), top+80);
 
                   // x0 = starting point on the horizontal line, left to right
                   // y0 = starting point on the vertical line, top to bottom
@@ -537,7 +589,9 @@
                   //     display: true,
                   //     text: 'Trace Data',
                   //   },          
-                  // },                                
+                  // },  
+                  //responsive: false,
+                  maintainAspectRatio: false,                                      
                   scales: {                                 
                     x: {
                       //type: 'linear',
