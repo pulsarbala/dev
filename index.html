@@ -48,6 +48,25 @@
         optionalServices: [CODELESS_SVC_UUID]
     }
   
+    // Global variables
+    var button_press = 0;
+    var length_var, distance_var, volume_var, compensated_var, mA_output_var, temperature_var, date_var, time_var, gate_start, gate_stop, echo_var, noise_var, status_var;
+    length_var = 0.000;//4.346;
+    distance_var = 0.000;//1.654;
+    volume_var = 0.000;//2.370;
+    compensated_var = 7.2;
+    mA_output_var = 0.000;//20.000;
+    temperature_var = 0.000;//20.000;
+    date_var = 190100.000;
+    time_var = 2210.000;
+    gate_start = 0;//202;
+    gate_stop = 0;//258;
+    echo_var = 0;//45;
+    noise_var = 0;//30;
+    status_var = 0;
+
+
+
     // Display text in log field text area 
     function log(text)
     {
@@ -55,6 +74,14 @@
       textarea.value += "\n" + text;	  
       textarea.scrollTop = textarea.scrollHeight;
     }
+
+    // Clears text in log field text area 
+    function clearlog()
+    {
+      var textarea = document.getElementById('log');
+      textarea.value = "";	  
+      textarea.scrollTop = textarea.scrollHeight;
+    }    
   
     const utf8encoder = new TextEncoder();
     const windows1251 = new TextEncoder();
@@ -70,54 +97,68 @@
       }
       return r;
     }
+    
+    // Function to flip the hex string (if needed)
+    function flipHexString(hexValue, hexDigits) {
+      var h = hexValue.substr(0, 2);
+      for (var i = 0; i < hexDigits; ++i) {
+        h += hexValue.substr(2 + (hexDigits - 1 - i) * 2, 2);
+      }
+      return h;
+    }
 
+    // Function to convert Hex values to float (Need Hex string to start with 0x)
+    function hexToFloat(hex) {
+      var s = hex >> 31 ? -1 : 1;
+      var e = (hex >> 23) & 0xFF;
+      return (s * (hex & 0x7fffff | 0x800000) * 1.0 / Math.pow(2, 23) * Math.pow(2, (e - 127)));
+    }
+
+    // Function to convert unsigned int 8 bit format to hex and relevant functions within it
     function Uint8tohex(s)
     {
-      let a = [];
-      var skip = 0;
+      let a = [];     
       var check;
+      var floatval;
       const doc_value = document.getElementById('cmd').value;
       for (let i = 0; i < s.byteLength; i++) {
         check = s.getUint8(i);
-        if((i == 0) && (check == 10))
-          skip = 1;
-        else if ((i == (s.byteLength-1)) && (check == 0))
-          skip = 1;
-        else
+        /*if((i < 42) && (((doc_value == "GET ECHO") || (doc_value == "GET DATEM") && (button_press == 8)) || (button_press == 10) || (button_press == 11))) //dynamic variables
         {
-          if(skip == 1)
-          {
-            if(doc_value == "GET ECHO1")
-              echo[i-1] = check*1000/255;
-            else if(doc_value == "GET ECHO2")
-              echo[99 + (i-1)] = check*1000/255;
-            else if(doc_value == "GET DATEM1")
-              datem[i-1] = check*1000/255;
-            else if(doc_value == "GET DATEM2")
-              datem[99 + (i-1)] = check*1000/255;
-            a.push(check);
-          }
-          else
-          {
-            if(doc_value == "GET ECHO1")
-              echo[i] = check*1000/255;
-            else if(doc_value == "GET ECHO2")
-              echo[99 + (i)] = check*1000/255;
-            else if(doc_value == "GET DATEM1")
-              datem[i] = check*1000/255;
-            else if(doc_value == "GET DATEM2")
-              datem[99 + (i)] = check*1000/255;
-            a.push(check);
-          }
+          //Do nothing. Can be removed.
+        }
+        else*/ if((i >= 42) && (i < 242) && (((doc_value == "GET ECHO") && (button_press == 8)) || (button_press == 10)))
+        {
+          echo[i-42] = check*1000/255;
+        }
+        else if((i >= 42) && (i < 242) && (((doc_value == "GET DATEM") && (button_press == 8)) || (button_press == 11)))
+        {
+          datem[i-42] = check*1000/255;
         }
         // a.push(s.getUint8(i));
-        // a.push('0x' + ('00' + s.getUint8(i).toString(16)).slice(-2));
+        a.push('0x' + ('00' + s.getUint8(i).toString(16)).slice(-2));
       }
       // console.log(a);
       // console.log(echo);
       // console.log(datem);
-      if((doc_value == "GET ECHO1") || (doc_value == "GET ECHO2") || (doc_value == "GET DATEM1") || (doc_value == "GET DATEM2"))
+      
+      if(((doc_value == "GET ECHO") || (doc_value == "GET DATEM") && (button_press == 8)) || (button_press == 10) || (button_press == 11)){
+        // Populate the dynamic variables
+        length_var = hexToFloat('0x' + ('00' + s.getUint8(0).toString(16)).slice(-2) + ('00' + s.getUint8(1).toString(16)).slice(-2) + ('00' + s.getUint8(2).toString(16)).slice(-2) + ('00' + s.getUint8(3).toString(16)).slice(-2));
+        distance_var = hexToFloat('0x' + ('00' + s.getUint8(4).toString(16)).slice(-2) + ('00' + s.getUint8(5).toString(16)).slice(-2) + ('00' + s.getUint8(6).toString(16)).slice(-2) + ('00' + s.getUint8(7).toString(16)).slice(-2));
+        volume_var = hexToFloat('0x' + ('00' + s.getUint8(8).toString(16)).slice(-2) + ('00' + s.getUint8(9).toString(16)).slice(-2) + ('00' + s.getUint8(10).toString(16)).slice(-2) + ('00' + s.getUint8(11).toString(16)).slice(-2));
+        compensated_var = hexToFloat('0x' + ('00' + s.getUint8(12).toString(16)).slice(-2) + ('00' + s.getUint8(13).toString(16)).slice(-2) + ('00' + s.getUint8(14).toString(16)).slice(-2) + ('00' + s.getUint8(15).toString(16)).slice(-2));
+        mA_output_var = hexToFloat('0x' + ('00' + s.getUint8(16).toString(16)).slice(-2) + ('00' + s.getUint8(17).toString(16)).slice(-2) + ('00' + s.getUint8(18).toString(16)).slice(-2) + ('00' + s.getUint8(19).toString(16)).slice(-2));
+        temperature_var = hexToFloat('0x' + ('00' + s.getUint8(20).toString(16)).slice(-2) + ('00' + s.getUint8(21).toString(16)).slice(-2) + ('00' + s.getUint8(22).toString(16)).slice(-2) + ('00' + s.getUint8(23).toString(16)).slice(-2));
+        date_var = hexToFloat('0x' + ('00' + s.getUint8(24).toString(16)).slice(-2) + ('00' + s.getUint8(25).toString(16)).slice(-2) + ('00' + s.getUint8(26).toString(16)).slice(-2) + ('00' + s.getUint8(27).toString(16)).slice(-2));
+        time_var = hexToFloat('0x' + ('00' + s.getUint8(28).toString(16)).slice(-2) + ('00' + s.getUint8(29).toString(16)).slice(-2) + ('00' + s.getUint8(30).toString(16)).slice(-2) + ('00' + s.getUint8(31).toString(16)).slice(-2));
+        gate_start = s.getUint8(32)*256 + s.getUint8(33);
+        gate_stop = s.getUint8(34)*256 + s.getUint8(35);
+        echo_var = s.getUint8(36)*256 + s.getUint8(37);
+        noise_var = s.getUint8(38)*256 + s.getUint8(39);
+        status_var = s.getUint8(40)*256 + s.getUint8(41);      
         myChart.update();
+      }
       return a;
     } 
 
@@ -137,12 +178,24 @@
       let readInValue = await outboundChar.readValue();
       let decoder = new TextDecoder('utf-8');
       var checkBox = document.getElementById("myCheck");
-      const doc_value = document.getElementById('cmd').value;
-      if((doc_value == "GET ECHO1") || (doc_value == "GET ECHO2") || (doc_value == "GET DATEM1") || (doc_value == "GET DATEM2") || (checkBox.checked == true))
-      // if (checkBox.checked == true)
+      const doc_value = document.getElementById('cmd').value;      
+      if ((checkBox.checked == true) && (button_press == 8))
       {
         var hex = Uint8tohex(readInValue);
-        log(" <- " + hex);
+        if(doc_value == "GET ECHO")
+          log(" <- ECHO Received");
+        else if (doc_value == "GET DATEM")
+          log(" <- DATEM Received");
+        else
+          log(" <- " + hex);
+      }
+      else if ((button_press == 10) || (button_press == 11) || ((button_press == 8) && ((doc_value == "GET ECHO") || (doc_value == "GET DATEM"))))
+      {
+        var hex = Uint8tohex(readInValue);
+        if((button_press == 10) || ((button_press == 8) && (doc_value == "GET ECHO")))
+          log(" <- ECHO Received");
+        else if ((button_press == 11) || ((button_press == 8) && (doc_value == "GET DATEM")))
+          log(" <- DATEM Received");        
       }
       else
       {
@@ -230,7 +283,8 @@
     }
     // If enter key was pressed by user while editing, send command immediately
     function wasEnter(elem) {
-      if(event.key === 'Enter') {
+      if(event.key == 'Enter') {
+        button_press = 8;
         sendAT(document.getElementById("cmd").value);
       }
     }
@@ -391,9 +445,9 @@
 					<h1 style="margin-top:0;margin-bottom:16px;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;">Bluetooth Remote Access</h1>                                
 						<table>
 						<tr>
-						  <td><button type="button" class="button button-style1" onclick="ble_connect()">Device Scan</button></td>
-						  <td><button type="button" class="button button-style1" onclick="bleDisconnect()">End Session</button></td>                      
-						  <td><button type="button" class="button button-style1" onclick="sendATL('AT+AUTH=123321')">Test-Login</button></td> 
+						  <td><button type="button" class="button button-style1" onclick="ble_connect(); button_press = 1">Device Scan</button></td>
+						  <td><button type="button" class="button button-style1" onclick="bleDisconnect();  button_press = 2">End Session</button></td>                      
+						  <td><button type="button" class="button button-style1" onclick="sendATL('AT+AUTH=123321');  button_press = 3">Test-Login</button></td> 
               <td>Hex: <input type="checkbox" id="myCheck">
               <p id="text" style="display:none">Checkbox is CHECKED!</p></td>                     
 						</tr>                    
@@ -439,7 +493,7 @@
 
               // Echo variables
               var echo = [];
-              for (let i = 0; i < 200; i++)
+/*              for (let i = 0; i < 200; i++)
               {
                 if(i <= 7)
                 {
@@ -456,10 +510,10 @@
               echo[Math.round(3.55*200/7.2)] = 195;
               echo[Math.round(3.77*200/7.2)] = 250;
               echo[Math.round(4.28*200/7.2)] = 160;
-
+*/
               // Datem variables
               var datem = [];
-              for (let i = 0; i < 200; i++)
+/*              for (let i = 0; i < 200; i++)
               {
                 if (i <= 4)
                   datem[i] = 1000;
@@ -472,7 +526,11 @@
                   datem[i] = (4200/i) + 60;
                 }
               }
-              
+*/            for (let i = 0; i < 200; i++)
+              {
+                echo[i] = 0;
+                datem[i] = 0;
+              }
               // setup block
               var data = {
                 //labels: ['0.00', '0.50', '1.00', '1.50', '2.00', '2.50', '3.00', '3.50', '4.00', '4.50', '5.00', '5.50', '6.00', '6.50', '7.00'],
@@ -534,24 +592,27 @@
                   // ctx.strokeRect(x.getPixelForValue(3), top, 0, height);  // Gate stop
                   // ctx.fillStyle = 'black';
                   ctx.fillStyle = 'yellow';
-                  ctx.fillRect(x.getPixelForValue(0), top, 0.3*width/7.2, height); // Near blanking area
+                  ctx.fillRect(x.getPixelForValue(0), top, 0.3*width/compensated_var, height); // Near blanking area (x.getPixelForValue(0), top, 0.3*width/7.2, height)
                   ctx.fillStyle = 'yellow';
-                  ctx.fillRect(x.getPixelForValue(6*200/7.2), top, (7.2 - 6.0)*width/7.2, height); // Far blanking area
+                  ctx.fillRect(x.getPixelForValue(6*200/compensated_var), top, (compensated_var - 6.0)*width/compensated_var, height); // Far blanking area (x.getPixelForValue(6*200/7.2), top, (7.2 - 6.0)*width/7.2, height)
                   //ctx.fillRect(x.getPixelForValue(Math.round(this.getLabelForValue(6*200/7.2)*2)/2), top, left+10, height); // Far blanking area
                   ctx.strokeStyle = 'red';
-                  ctx.strokeRect(x.getPixelForValue(1.654*200/7.2), top, 0, height);  // Distance//(x0, y0, x1, y1);
+                  ctx.strokeRect(x.getPixelForValue(distance_var*200/compensated_var), top, 0, height);  // Distance//(x0, y0, x1, y1); (x.getPixelForValue(distance_var*200/7.2), top, 0, height)
                   ctx.strokeStyle = 'black';
-                  ctx.strokeRect(x.getPixelForValue((1.654 - 0.20)*200/7.2), top, 0, height);  // Gate start
+                  ctx.strokeRect(x.getPixelForValue(gate_start/5), top, 0, height);  // Gate start (x.getPixelForValue((distance_var - 0.20)*200/7.2), top, 0, height)
                   ctx.strokeStyle = 'black';
-                  ctx.strokeRect(x.getPixelForValue((1.654 + 0.20)*200/7.2), top, 0, height);  // Gate stop
+                  ctx.strokeRect(x.getPixelForValue(gate_stop/5), top, 0, height);  // Gate stop (x.getPixelForValue((distance_var + 0.20)*200/7.2), top, 0, height)
                   ctx.fillStyle = 'black';                  
-                  ctx.fillText("Length          = 4.346 m", x.getPixelForValue(140), top+10); // Dynamic variables
-                  ctx.fillText("Distance       = 1.654 m", x.getPixelForValue(140), top+20);
-                  ctx.fillText("Volume         = 2.37 m³", x.getPixelForValue(140), top+30);
-                  ctx.fillText("Temperature = 20.00 °C", x.getPixelForValue(140), top+40);
-                  ctx.fillText("Noise            = 30 mV", x.getPixelForValue(140), top+50);
-                  ctx.fillText("Output          = 20.00 mA", x.getPixelForValue(140), top+60);
-                  ctx.fillText("Status           = OK", x.getPixelForValue(140), top+80);
+                  ctx.fillText("Length          = " + length_var.toFixed(3) + " m", x.getPixelForValue(140), top+10); // Dynamic variables
+                  ctx.fillText("Distance       = " + distance_var.toFixed(3) + " m", x.getPixelForValue(140), top+20);
+                  ctx.fillText("Volume         = " + volume_var.toFixed(3) + " m³", x.getPixelForValue(140), top+30);
+                  ctx.fillText("Temperature = " + temperature_var.toFixed(2) + " °C", x.getPixelForValue(140), top+40);
+                  ctx.fillText("Noise            = " + noise_var.toFixed(0) + " mV", x.getPixelForValue(140), top+50);
+                  ctx.fillText("Output          = " + mA_output_var.toFixed(2) + " mA", x.getPixelForValue(140), top+60);
+                  if(status_var == 0)
+                    ctx.fillText("Status           = OK", x.getPixelForValue(140), top+80);
+                  else
+                    ctx.fillText("Status           = ERROR", x.getPixelForValue(140), top+80);
 
                   // x0 = starting point on the horizontal line, left to right
                   // y0 = starting point on the vertical line, top to bottom
@@ -660,33 +721,46 @@
               </script>
 
 							<td>
-								  <button type="button" class="button" onclick="sendAT('ATrI')">
+								  <button type="button" class="button" onclick="sendAT('ATrI'); button_press = 4">
 									  Version
 								  </button>
 							  </td>
 							  <td>
-							  <button type="button" class="button" onclick="sendAT('AT+PT=1')">
+							  <button type="button" class="button" onclick="sendAT('AT+PT=1'); button_press = 5">
 							  Enter PT
 							  </button>
 							  </td>
+							  <td>
+                  <button type="button" class="button" onclick="sendAT('GET ECHO'); button_press = 10">
+                  GET ECHO
+                  </button>
+                </td>                
 							  </tr>
 							  <tr>
 							  <td>
-								<button type="button" class="button" onclick="sendAT('TRACE ON')">
+								<button type="button" class="button" onclick="sendAT('TRACE ON'); button_press = 6">
 									TRACE ON
 								</button>
 							</td>
 							<td>
-								<button type="button"  class="button"  onclick="sendAT('TRACE OFF')">
+								<button type="button"  class="button"  onclick="sendAT('TRACE OFF'); button_press = 7">
 									TRACE OFF
 								</button>
-							</td>						
+							</td>
+              <td>
+                <button type="button" class="button" onclick="sendAT('GET DATEM'); button_press = 11">
+                GET DATEM
+                </button>
+              </td>                  						
 						</tr>
 						<tr>
 							<input type="text" id="cmd" onkeydown="wasEnter(this)">
-							<button type="button" class="button" onclick="sendAT(document.getElementById('cmd').value)">
+							<button type="button" class="button" onclick="sendAT(document.getElementById('cmd').value); button_press = 8">
 								Transmit Command
 							</button>  
+              <button type="button" class="button" onclick="clearlog(); button_press = 9">
+                Clear
+              </button>
 						  </tr>
 					  </table>
 				  </td>
