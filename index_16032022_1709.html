@@ -101,20 +101,7 @@
       }
       return r;
     }
-    // Function to detect iOS platform
-    // function iOS() {
-    //   return [
-    //     'iPad Simulator',
-    //     'iPhone Simulator',
-    //     'iPod Simulator',
-    //     'iPad',
-    //     'iPhone',
-    //     'iPod'
-    //   ].includes(navigator.platform)
-    //   // iPad on iOS 13 detection
-    //   || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
-    // }
-
+    
     // Function to flip the hex string (if needed)
     function flipHexString(hexValue, hexDigits) {
       var h = hexValue.substr(0, 2);
@@ -140,7 +127,11 @@
       const doc_value = document.getElementById('cmd').value;
       for (let i = 0; i < s.byteLength; i++) {
         check = s.getUint8(i);
-        if((i >= 50) && (i < 250) && (((doc_value == "GET ECHO") && (button_press == 8)) || (button_press == 10))) // Changed from (i >= 42) && (i < 242)
+        /*if((i < 42) && (((doc_value == "GET ECHO") || (doc_value == "GET DATEM") && (button_press == 8)) || (button_press == 10) || (button_press == 11))) //dynamic variables
+        {
+          //Do nothing. Can be removed.
+        }
+        else*/ if((i >= 50) && (i < 250) && (((doc_value == "GET ECHO") && (button_press == 8)) || (button_press == 10))) // Changed from (i >= 42) && (i < 242)
         {
           echo[i-50] = check*1000/255;  // Changed from echo[i-42]
         }
@@ -376,22 +367,18 @@
 	  margin: 4px 2px;
 	  cursor: pointer;
 	}
-	</style>
-  <style>
   .navbar {
-    /* background: white; */
-    background-color: #00FFCC;
-    background-image: none;
-    width: 100%;
-    height: 100px;
-    position: static;
-    top: 0;
-    left: 0;
-  }
-  .navbar-default {
+  background: white;
+  width: 100%;
+  height: 70px;
+  position: static;
+  top: 0;
+  left: 0;
+}
+.navbar-default {
     background: transparent;
-  }
-  </style>
+}
+	</style>
     <noscript>
         <link rel="stylesheet" href="css/skel-noscript.css" />
         <link rel="stylesheet" href="css/style.css" />
@@ -409,7 +396,7 @@
   </head>
 <body>
 <section id="header">
-	<nav class="navbar navbar-default ">		
+	<nav class="navbar navbar-default navbar-fixed-top">		
         <div class="container">			
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
@@ -454,26 +441,22 @@
 					<li>
                         <a class="tag_menu" href="pages.html">ELEMENTS</a>
                     </li>
-					
+					-->
 					<li>
                         <a class="tag_menu" href="contact.html">Trace</a>
                     </li>
-           -->
-          <li>
-            <a id="Bluefy" class="tag_menu" href="https://apps.apple.com/us/app/bluefy-web-ble-browser/id1492822055">Bluefy</a>           
-          </li>           
 					
 					<li class="dropdown">
-					  <a class="tag_menu" href="#" data-toggle="dropdown" role="button" aria-expanded="false">More<span class="caret"></span></a>					  
+					  <a class="tag_menu" href="#" data-toggle="dropdown" role="button" aria-expanded="false">MORE<span class="caret"></span></a>					  
 					  <ul class="dropdown-menu drop_1" role="menu">
-              <li><a href="#">Menu 1</a></li>
-              <li><a href="#">Menu 2</a></li>
-              <li><a href="#">Menu 3</a></li>
-              <li><a href="#">Menu 4</a></li>
-              <!--<li><a href="#">Blogpost</a></li>
-              <li><a href="#">Detail</a></li> -->
+						<li><a href="#">menu1</a></li>
+						<li><a href="#">menu2</a></li>
+						<li><a href="#">menu3</a></li>
+						<li><a href="#">menu4</a></li>
+						<!--<li><a href="#">Blogpost</a></li>
+						<li><a href="#">Detail</a></li> -->
 					  </ul>
-          </li>					
+                    </li>					
                 </ul>				 
             </div>
             <!-- /.navbar-collapse -->
@@ -513,12 +496,9 @@
               <div class="chartBox" style="position: relative; margin: auto; height:300px; width:550px">
                 <canvas id="myChart"></canvas>
               </div>   
-              <!-- Online mode -->
-              <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-              <script> -->
-                <!-- Offline mode -->
-                <script src="./js/chart.js"></script>
-                <script>
+
+              <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+              <script>
               
               // X points/labels
               var xdata = [];
@@ -527,15 +507,61 @@
               xdata[0] = 0.00;
               for (let i = 1; i <= 200; i++)
               {
+                // if(i%14 == 0)
+                // {
+                //   xdata[i] = pts;
+                //   pts += 0.5;
+                // }
+                //xdata[i] = i*(7.2/199);
+                //xdata[i] = Math.round(i*(7.2/199)*1000)/1000;
                 xdata[i] = Math.round((xdata[i - 1] + 0.036)*1000)/1000;
+                // if(xdata[i] >= pts)
+                // {
+                //   xdata[i] = pts;
+                //   pts += 0.50;
+                // }
+                // else
+                // {
+                //   xdata[i] = "";
+                // }
               }
 
               // Echo variables
               var echo = [];
-
+/*              for (let i = 0; i < 200; i++)
+              {
+                if(i <= 7)
+                {
+                  echo[i] = 1000 - (140*i);
+                }
+                else
+                  echo[i] = 20;
+              }
+              echo[Math.round(1.654*200/7.2)] = 560;  // Adding peaks
+              echo[Math.round(1.75*200/7.2)] = 400;
+              echo[Math.round(2.1*200/7.2)] = 540;
+              echo[Math.round(2.55*200/7.2)] = 290;
+              echo[Math.round(3.4*200/7.2)] = 340;
+              echo[Math.round(3.55*200/7.2)] = 195;
+              echo[Math.round(3.77*200/7.2)] = 250;
+              echo[Math.round(4.28*200/7.2)] = 160;
+*/
               // Datem variables
               var datem = [];
-              for (let i = 0; i < 200; i++)
+/*              for (let i = 0; i < 200; i++)
+              {
+                if (i <= 4)
+                  datem[i] = 1000;
+                else if (i <= 7)
+                {
+                  datem[i] = 1000 - (48.57*i);
+                }
+                else  // Creating a hyperbola
+                {
+                  datem[i] = (4200/i) + 60;
+                }
+              }
+*/            for (let i = 0; i < 200; i++)
               {
                 echo[i] = 0;
                 datem[i] = 0;
@@ -603,7 +629,9 @@
                   ctx.fillStyle = 'yellow';
                   ctx.fillRect(x.getPixelForValue(0), top, near_blanking_var*width/compensated_var, height); // Near blanking area (x.getPixelForValue(0), top, 0.3*width/7.2, height)
                   ctx.fillStyle = 'yellow';
-                  ctx.fillRect(x.getPixelForValue(200.0/1.2), top, width*(far_blanking_dist - mode_var)/compensated_var, height); // Far blanking area
+                  ctx.fillRect(x.getPixelForValue(200.0/1.2), top, width*(far_blanking_dist - mode_var)/compensated_var, height); 
+                  //ctx.fillRect(x.getPixelForValue(far_blanking_var*200/compensated_var), top, (compensated_var - far_blanking_var)*width/compensated_var, height); // Far blanking area (x.getPixelForValue(6*200/7.2), top, (7.2 - 6.0)*width/7.2, height)
+                  //ctx.fillRect(x.getPixelForValue(Math.round(this.getLabelForValue(6*200/7.2)*2)/2), top, left+10, height); // Far blanking area
                   ctx.strokeStyle = 'red';
                   ctx.strokeRect(x.getPixelForValue(distance_var*200/compensated_var), top, 0, height);  // Distance//(x0, y0, x1, y1); (x.getPixelForValue(distance_var*200/7.2), top, 0, height)
                   ctx.strokeStyle = 'black';
