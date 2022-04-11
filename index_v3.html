@@ -312,21 +312,20 @@
       // Read data from BLE CodeLess peer
       let readInValue = await outboundChar.readValue();
       let decoder = new TextDecoder('utf-8');
-      // var checkBox = document.getElementById("myCheck");
+      var checkBox = document.getElementById("myCheck");
       const doc_value = document.getElementById('cmd').value;
       const string_check =  decoder.decode(readInValue).replace('\r','').replace('\n','').replace('\0','');      
-      // if ((checkBox.checked == true) && (button_press == 8))
-      // {
-      //   var hex = Uint8tohex(readInValue);
-      //   if(doc_value == "GET ECHO")
-      //     log(" <- ECHO Received");
-      //   else if (doc_value == "GET DATEM")
-      //     log(" <- DATEM Received");
-      //   else
-      //     log(" <- " + hex);
-      // }
-      // else 
-      if ((button_press == 10) || (button_press == 11) || ((button_press == 8) && ((doc_value == "GET ECHO") || (doc_value == "GET DATEM"))))
+      if ((checkBox.checked == true) && (button_press == 8))
+      {
+        var hex = Uint8tohex(readInValue);
+        if(doc_value == "GET ECHO")
+          log(" <- ECHO Received");
+        else if (doc_value == "GET DATEM")
+          log(" <- DATEM Received");
+        else
+          log(" <- " + hex);
+      }
+      else if ((button_press == 10) || (button_press == 11) || ((button_press == 8) && ((doc_value == "GET ECHO") || (doc_value == "GET DATEM"))))
       {
         var hex = Uint8tohex(readInValue);
         if((button_press == 10) || ((button_press == 8) && (doc_value == "GET ECHO")))
@@ -362,22 +361,6 @@
       }
     }
   
-  // Send an AT command to the CodeLess BLE peer
-  async function sendATL(cmd) {
-      // Display the command in the log
-      log(' -> Logging ...'   );
-      // Append an extra character as expected by CodeLess
-      var commandToSend = cmd + "\0";
-      try{
-        let encoder = new TextEncoder('utf-8');
-        // Send command via GATT Write request 
-        await inboundChar.writeValue(encoder.encode(commandToSend));
-      } 
-      catch(error) {
-        log('Failed: ' + error);
-      }
-    }
-
     // Scan, connect and explore CodeLess BLE device
     async function ble_connect() {
       try {
@@ -398,13 +381,28 @@
         log('Ready to communicate!\n');
         login_stage = 1;
         sendATL('AT+AUTH=123321');
-        button_press = 3;
       }
       catch(error) {
         log('Failed: ' + error);
       }
-    }    
+    }
+  // Send an AT command to the CodeLess BLE peer
+  async function sendATL(cmd) {
+      // Display the command in the log
+      log(' -> Logging ...'   );
+      // Append an extra character as expected by CodeLess
+      var commandToSend = cmd + "\0";
+      try{
+        let encoder = new TextEncoder('utf-8');
+        // Send command via GATT Write request 
+        await inboundChar.writeValue(encoder.encode(commandToSend));
+      } 
+      catch(error) {
+        log('Failed: ' + error);
+      }
+    }
 
+    
     // Send an AT command to the CodeLess BLE peer
     async function sendAT(cmd) {
       // Display the command in the log
@@ -491,6 +489,22 @@
         cursor: pointer;
         resize: none;
 	}
+    #ble_disconnect {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+	    /* padding: 15px 32px; */
+        height:50px;
+        width:165px;
+        /* width:160px; */
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 100px;
+        cursor: pointer;
+        border-radius: 8px;        
+    }
 	</style>
   <style>
   .navbar {
@@ -543,7 +557,7 @@
 
 			<!-- <div class="center"><h1>Reflect</h1></div> -->
             <!-- Collect the nav links, forms, and other content for toggling -->            
-			<!-- <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">				
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">				
                 <ul class="nav navbar-nav navbar-right">
           <li>
             <a id="Bluefy" class="tag_menu" href="https://apps.apple.com/us/app/bluefy-web-ble-browser/id1492822055">Bluefy</a>           
@@ -556,10 +570,12 @@
               <li><a href="#">Menu 2</a></li>
               <li><a href="#">Menu 3</a></li>
               <li><a href="#">Menu 4</a></li>
+              <!--<li><a href="#">Blogpost</a></li>
+              <li><a href="#">Detail</a></li> -->
 					  </ul>
           </li>					
                 </ul>				 
-            </div> -->
+            </div>
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container-fluid -->
@@ -582,11 +598,11 @@
 						<table>
                             <tr>
                                 <td><button type="button" class="button button-style1" onclick="ble_connect(); button_press = 1">Device Scan</button></td>
-                                <td><button type="button" class="button button-style1" onclick="bleDisconnect();  button_press = 2">End Session</button></td>                      
-                                <!-- <td><button type="button" class="button button-style1" onclick="sendATL('AT+AUTH=123321');  button_press = 3">Test-Login</button></td> 
+                                <td><button id="ble_disconnect" type="button" class="button button-style1" onclick="bleDisconnect();  button_press = 2">End Session</button></td>                      
+                                <!-- <td><button id="test_login" type="button" class="button button-style1" onclick="sendATL('AT+AUTH=123321');  button_press = 3">Test-Login</button></td> 
                                 <td>Hex: <input type="checkbox" id="myCheck">
-                                <p id="text" style="display:none">Checkbox is CHECKED!</p></td>                -->
-                            </tr>                    
+                                <p id="text" style="display:none">Checkbox is CHECKED!</p></td>                      -->
+                            </tr>                
 					    </table>
 					    <table>                    
                             <tr>
@@ -802,10 +818,10 @@
                                     </button>
                                 </td>
                                 <!-- <td>
-                                    <button type="button" class="button" onclick="sendAT('GET ECHO'); button_press = 10">
+                                    <button id="get_echo" type="button" class="button" onclick="sendAT('GET ECHO'); button_press = 10">
                                         GET ECHO
                                     </button>
-                                </td>              -->
+                                </td>                 -->
                             </tr>
                             <tr>
                                 <td>
@@ -820,7 +836,7 @@
                                     </button>
                                 </td>
                                 <!-- <td>
-                                    <button type="button" class="button" onclick="sendAT('GET DATEM'); button_press = 11">
+                                    <button id="get_datem" type="button" class="button" onclick="sendAT('GET DATEM'); button_press = 11">
                                         GET DATEM
                                     </button>
                                 </td>                  						 -->
