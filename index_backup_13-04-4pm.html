@@ -314,7 +314,7 @@
       let decoder = new TextDecoder('utf-8');
       // var checkBox = document.getElementById("myCheck");
       const doc_value = document.getElementById('cmd').value;
-      const string_check =  decoder.decode(readInValue).replace('\r','x').replace('\n','y').replace('\0','eeeez');      
+      const string_check =  decoder.decode(readInValue).replace('\r','').replace('\n','').replace('\0','');      
       // if ((checkBox.checked == true) && (button_press == 8))
       // {
       //   var hex = Uint8tohex(readInValue);
@@ -335,19 +335,13 @@
           log(" <- DATEM Received");        
       }
       else
-      { 
+      {
         if(string_check.includes("Entered PASSTHROUGH mode"))
         {
             login_stage = 2;
-            log(" <- Log in Success");
         }
-        else if(string_check.includes("Logged In Success")){
-          log(" <- Connected");
-        }
-        else{
-          // Log the incoming string (format slightly)
-          log(" <- " + decoder.decode(readInValue).replace('\r','\r <- ').replace('\n','').replace('\0',''));   
-        }
+        // Log the incoming string (format slightly)
+        log(" <- " + decoder.decode(readInValue).replace('\r','\r <- ').replace('\n','').replace('\0',''));    
       }
     }
   
@@ -371,11 +365,7 @@
   // Send an AT command to the CodeLess BLE peer
   async function sendATL(cmd) {
       // Display the command in the log
-      if(cmd === 'AT+PT=1')
-          log(' -> Logging ...'   );
-      else 
-          log(' -> Connecting ...'   );
-
+      log(' -> Logging ...'   );
       // Append an extra character as expected by CodeLess
       var commandToSend = cmd + "\0";
       try{
@@ -592,8 +582,7 @@
 						<table>
                             <tr>
                                 <td><button type="button" class="button button-style1" onclick="ble_connect(); button_press = 1">Device Scan</button></td>
-                                <td><button type="button" class="button button-style1" onclick="bleDisconnect();  button_press = 2">End Session</button></td> 
-                                <td><button type="button" class="button button-style1" onclick="sendATL('AT+PT=1');  button_press = 3">Login</button></td> 
+                                <td><button type="button" class="button button-style1" onclick="bleDisconnect();  button_press = 2">End Session</button></td>                      
                                 <!-- <td><button type="button" class="button button-style1" onclick="sendATL('AT+AUTH=123321');  button_press = 3">Test-Login</button></td> 
                                 <td>Hex: <input type="checkbox" id="myCheck">
                                 <p id="text" style="display:none">Checkbox is CHECKED!</p></td>                -->
@@ -800,30 +789,31 @@
                                     </button>
                                 </td>   
                             </tr>
-                            <!-- <tr>
+                            <tr>
                                 <td>
                                     <button type="button" class="button" onclick="sendAT('ATrI'); button_press = 4">
                                         Version
                                     </button>
                                 </td>
                                 <td></td>
-                                 <td>
+                                <td>
                                     <button type="button" class="button" onclick="sendAT('AT+PT=1'); button_press = 5">
                                         Enter PT
                                     </button>
-                                </td>  
-                                  <td>
+                                </td>
+                                <!-- <td>
                                     <button type="button" class="button" onclick="sendAT('GET ECHO'); button_press = 10">
                                         GET ECHO
                                     </button>
-                                </td>               
-                            </tr> -->
+                                </td>              -->
+                            </tr>
                             <tr>
                                 <td>
                                     <button type="button" class="button" onclick="trace_button_check();">
                                         TRACE ON
                                     </button>
-                                </td>                                
+                                </td>
+                                <td></td>
                                 <td>
                                     <button type="button"  class="button" onclick="trace_off();">
                                         TRACE OFF
