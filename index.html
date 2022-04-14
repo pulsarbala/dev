@@ -259,21 +259,8 @@
     function data_log_update() {
         var textarea = document.getElementById('data-log');
         textarea.value = "";
-        textarea.value += "Length              = " + length_var.toFixed(3) + " m" + "\n";
+        textarea.value += "Level              \t = " + length_var.toFixed(3) + " m" + "\n";
         textarea.value += "Distance           = " + distance_var.toFixed(3) + " m" + "\n";
-        textarea.value += "Volume             = " + volume_var.toFixed(3) + " m³" + "\n";
-        textarea.value += "Temperature     = " + temperature_var.toFixed(2) + " °C" + "\n";
-        textarea.value += "Noise                = " + noise_var.toFixed(0) + " mV" + "\n";
-        textarea.value += "Output              = " + mA_output_var.toFixed(2) + " mA" + "\n\n";
-
-        
-        // ctx.fillText("Length          = " + length_var.toFixed(3) + " m", x.getPixelForValue(140), top+10); // Dynamic variables
-        // ctx.fillText("Distance       = " + distance_var.toFixed(3) + " m", x.getPixelForValue(140), top+20);
-        // ctx.fillText("Volume         = " + volume_var.toFixed(3) + " m³", x.getPixelForValue(140), top+30);
-        // ctx.fillText("Temperature = " + temperature_var.toFixed(2) + " °C", x.getPixelForValue(140), top+40);
-        // ctx.fillText("Noise            = " + noise_var.toFixed(0) + " mV", x.getPixelForValue(140), top+50);
-        // ctx.fillText("Output          = " + mA_output_var.toFixed(2) + " mA", x.getPixelForValue(140), top+60);
-
         bit0 = status_var & 1;
         bit1 = status_var & 2;
         bit2 = status_var & 4;
@@ -283,7 +270,7 @@
         bit6 = status_var & 64;
         bit7 = status_var & 128;
         if(status_var == 0)
-            textarea.value += "Status               = OK";                        
+            textarea.value += "Status               = OK";
         else {
             if (bit4 == 16) {
                 if (bit5 == 32)
@@ -304,6 +291,19 @@
             else
                 textarea.value += "Status               = " + status_var;
         }
+        textarea.value += "\n";
+        textarea.value += "Volume             = " + volume_var.toFixed(3) + " m³" + "\n";
+        textarea.value += "Temperature     = " + temperature_var.toFixed(2) + " °C" + "\n";
+        textarea.value += "Noise                = " + noise_var.toFixed(0) + " mV" + "\n";
+        textarea.value += "Output              = " + mA_output_var.toFixed(2) + " mA" + "\n\n";
+                
+        // ctx.fillText("Length          = " + length_var.toFixed(3) + " m", x.getPixelForValue(140), top+10); // Dynamic variables
+        // ctx.fillText("Distance       = " + distance_var.toFixed(3) + " m", x.getPixelForValue(140), top+20);
+        // ctx.fillText("Volume         = " + volume_var.toFixed(3) + " m³", x.getPixelForValue(140), top+30);
+        // ctx.fillText("Temperature = " + temperature_var.toFixed(2) + " °C", x.getPixelForValue(140), top+40);
+        // ctx.fillText("Noise            = " + noise_var.toFixed(0) + " mV", x.getPixelForValue(140), top+50);
+        // ctx.fillText("Output          = " + mA_output_var.toFixed(2) + " mA", x.getPixelForValue(140), top+60);
+
         textarea.scrollTop = textarea.scrollHeight;
     }
 
