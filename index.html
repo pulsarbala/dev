@@ -257,10 +257,11 @@
     }
 
     function data_log_update() {
-        var textarea = document.getElementById('data-log');
+      var textarea = document.getElementById('data-log');
         textarea.value = "";
-        textarea.value += "Level              \t = " + length_var.toFixed(3) + " m" + "\n";
-        textarea.value += "Distance           = " + distance_var.toFixed(3) + " m" + "\n";
+        textarea.value += "Level\t\t= " + length_var.toFixed(3) + " m" + "\n";
+        textarea.value += "Distance\t\t= " + distance_var.toFixed(3) + " m" + "\n";
+
         bit0 = status_var & 1;
         bit1 = status_var & 2;
         bit2 = status_var & 4;
@@ -270,40 +271,39 @@
         bit6 = status_var & 64;
         bit7 = status_var & 128;
         if(status_var == 0)
-            textarea.value += "Status               = OK";
+            textarea.value += "Status\t\t= OK\n\n";                        
         else {
             if (bit4 == 16) {
                 if (bit5 == 32)
-                    textarea.value += "Status               = LOE fail high";
+                    textarea.value += "Status\t\t= LOE fail high\n\n";
                 else if (bit6 == 64)
-                    textarea.value += "Status               = LOE fail low";
+                    textarea.value += "Status\t\t= LOE fail low\n\n";
                 else
-                    textarea.value += "Status               = LOE fail";
+                    textarea.value += "Status\t\t= LOE fail\n\n";
             }
             else if (bit3 == 8)
-                textarea.value += "Status               = LOE";
+                textarea.value += "Status\t\t= LOE\n\n";
             else if (bit2 == 4)
-                textarea.value += "Status               = Temp";
+                textarea.value += "Status\t\t= Temp\n\n";
             else if (bit1 == 2)
-                textarea.value += "Status               = Voltage";
+                textarea.value += "Status\t\t= Voltage\n\n";
             else if (bit7 == 128)
-                textarea.value += "Status               = Alarm";
+                textarea.value += "Status\t\t= Alarm\n\n";
             else
-                textarea.value += "Status               = " + status_var;
+                textarea.value += "Status\t\t= " + status_var + "\n\n";
         }
-        textarea.value += "\n";
-        textarea.value += "Volume             = " + volume_var.toFixed(3) + " m³" + "\n";
-        textarea.value += "Temperature     = " + temperature_var.toFixed(2) + " °C" + "\n";
-        textarea.value += "Noise                = " + noise_var.toFixed(0) + " mV" + "\n";
-        textarea.value += "Output              = " + mA_output_var.toFixed(2) + " mA" + "\n\n";
-                
+
+        textarea.value += "Volume\t\t= " + volume_var.toFixed(3) + " m³" + "\n";
+        textarea.value += "Temperature\t= " + temperature_var.toFixed(2) + " °C" + "\n";
+        textarea.value += "Noise\t\t= " + noise_var.toFixed(0) + " mV" + "\n";
+        textarea.value += "Output\t\t= " + mA_output_var.toFixed(2) + " mA";
+        
         // ctx.fillText("Length          = " + length_var.toFixed(3) + " m", x.getPixelForValue(140), top+10); // Dynamic variables
         // ctx.fillText("Distance       = " + distance_var.toFixed(3) + " m", x.getPixelForValue(140), top+20);
         // ctx.fillText("Volume         = " + volume_var.toFixed(3) + " m³", x.getPixelForValue(140), top+30);
         // ctx.fillText("Temperature = " + temperature_var.toFixed(2) + " °C", x.getPixelForValue(140), top+40);
         // ctx.fillText("Noise            = " + noise_var.toFixed(0) + " mV", x.getPixelForValue(140), top+50);
         // ctx.fillText("Output          = " + mA_output_var.toFixed(2) + " mA", x.getPixelForValue(140), top+60);
-
         textarea.scrollTop = textarea.scrollHeight;
     }
 
@@ -602,7 +602,7 @@
 					    <table>                    
                             <tr>
                                 <td><textarea id="log" class="textarea" rows="8" cols="31" readonly></textarea></td>
-                                <td><textarea id="data-log" class="textarea" rows="8" cols="31" readonly></textarea></td>
+                                <td><textarea id="data-log" class="textarea" rows="8" cols="31" style="font-size: 16pt; font-weight: bold" readonly></textarea></td>
                             </tr>
                         </table>
                         <table>
